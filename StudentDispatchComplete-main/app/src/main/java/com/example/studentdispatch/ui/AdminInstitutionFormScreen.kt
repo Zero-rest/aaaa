@@ -1,19 +1,32 @@
-@file:OptIn(androidx.compose.material.ExperimentalMaterialApi::class)
-
 @file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.example.studentdispatch.ui
 
-import androidx.compose.material.ExperimentalMaterialApi
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.studentdispatch.data.Institution
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminInstitutionFormScreen(
     state: DispatchUiState,
@@ -22,7 +35,8 @@ fun AdminInstitutionFormScreen(
     onBack: () -> Unit
 ) {
     if (!state.isAdmin) {
-        onBack(); return
+        onBack()
+        return
     }
 
     val editing = state.all.firstOrNull { it.id == editId }
@@ -46,41 +60,90 @@ fun AdminInstitutionFormScreen(
             )
         }
     ) { pad ->
-        Column(Modifier.padding(pad).padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-
-            OutlinedTextField(name, { name = it; err="" }, label = { Text("نام موسسه") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(country, { country = it; err="" }, label = { Text("کشور") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(city, { city = it; err="" }, label = { Text("شهر") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(phone, { phone = it; err="" }, label = { Text("تلفن") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(website, { website = it; err="" }, label = { Text("وبسایت") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(desc, { desc = it; err="" }, label = { Text("توضیحات") }, modifier = Modifier.fillMaxWidth(), minLines = 3)
+        Column(
+            modifier = Modifier.padding(pad).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
 
             OutlinedTextField(
-                success, { success = it.filter { ch -> ch.isDigit() }; err="" },
+                value = name,
+                onValueChange = { name = it; err = "" },
+                label = { Text("نام موسسه") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = country,
+                onValueChange = { country = it; err = "" },
+                label = { Text("کشور") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = city,
+                onValueChange = { city = it; err = "" },
+                label = { Text("شهر") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = phone,
+                onValueChange = { phone = it; err = "" },
+                label = { Text("تلفن") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = website,
+                onValueChange = { website = it; err = "" },
+                label = { Text("وبسایت") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = desc,
+                onValueChange = { desc = it; err = "" },
+                label = { Text("توضیحات") },
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3
+            )
+
+            OutlinedTextField(
+                value = success,
+                onValueChange = {
+                    success = it.filter { ch -> ch.isDigit() }
+                    err = ""
+                },
                 label = { Text("تعداد کارهای موفق") },
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Switch(checked = sponsored, onCheckedChange = { sponsored = it })
                 Spacer(Modifier.width(8.dp))
                 Text("نمایش به عنوان تبلیغ (Sponsored)")
             }
 
             OutlinedTextField(
-                adCost,
-                { adCost = it.filter { ch -> ch.isDigit() }; err="" },
+                value = adCost,
+                onValueChange = {
+                    adCost = it.filter { ch -> ch.isDigit() }
+                    err = ""
+                },
                 label = { Text("هزینه تبلیغ (adCost)") },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = sponsored
             )
 
-            if (err.isNotBlank()) Text(err, color = MaterialTheme.colorScheme.error)
+            if (err.isNotBlank()) {
+                Text(err, color = MaterialTheme.colorScheme.error)
+            }
 
             Button(
                 onClick = {
                     val s = success.toIntOrNull()
                     val a = adCost.toIntOrNull()
+
                     if (name.isBlank()) { err = "نام موسسه الزامی است."; return@Button }
                     if (s == null) { err = "تعداد کارهای موفق معتبر نیست."; return@Button }
                     if (sponsored && (a == null)) { err = "هزینه تبلیغ معتبر نیست."; return@Button }
@@ -101,7 +164,9 @@ fun AdminInstitutionFormScreen(
                     )
                 },
                 modifier = Modifier.fillMaxWidth()
-            ) { Text("ذخیره") }
+            ) {
+                Text("ذخیره")
+            }
         }
     }
 }

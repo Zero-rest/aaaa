@@ -1,21 +1,28 @@
-@file:OptIn(androidx.compose.material.ExperimentalMaterialApi::class)
-
 @file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-package com.example.studentdispatch.ui
 
-import androidx.compose.material.ExperimentalMaterialApi
+package com.example.studentdispatch.ui
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DispatchDetailScreen(
     instId: Int,
@@ -29,9 +36,7 @@ fun DispatchDetailScreen(
         topBar = {
             TopAppBar(
                 title = { Text("جزئیات موسسه") },
-                navigationIcon = {
-                    TextButton(onClick = onBack) { Text("بازگشت") }
-                }
+                navigationIcon = { TextButton(onClick = onBack) { Text("بازگشت") } }
             )
         }
     ) { pad ->
@@ -42,7 +47,10 @@ fun DispatchDetailScreen(
             return@Scaffold
         }
 
-        Column(Modifier.padding(pad).padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(
+            modifier = Modifier.padding(pad).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             Text(inst.name, style = MaterialTheme.typography.headlineSmall)
 
             if (inst.isSponsored) {
@@ -60,15 +68,19 @@ fun DispatchDetailScreen(
             Divider()
 
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Button(onClick = {
-                    val uri = Uri.parse("tel:${inst.phone}")
-                    ctx.startActivity(Intent(Intent.ACTION_DIAL, uri))
-                }) { Text("تماس") }
+                Button(
+                    onClick = {
+                        val uri = Uri.parse("tel:${inst.phone}")
+                        ctx.startActivity(Intent(Intent.ACTION_DIAL, uri))
+                    }
+                ) { Text("تماس") }
 
-                OutlinedButton(onClick = {
-                    val url = if (inst.website.startsWith("http")) inst.website else "https://${inst.website}"
-                    ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                }) { Text("وبسایت") }
+                OutlinedButton(
+                    onClick = {
+                        val url = if (inst.website.startsWith("http")) inst.website else "https://${inst.website}"
+                        ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    }
+                ) { Text("وبسایت") }
             }
         }
     }
