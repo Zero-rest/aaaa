@@ -14,10 +14,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenu
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -98,59 +96,14 @@ private fun InstitutionCard(inst: Institution, onClick: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth().clickable { onClick() }) {
         Column(Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(inst.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                Text(
+                    inst.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f)
+                )
                 if (inst.isSponsored) {
                     AssistChip(onClick = {}, label = { Text("تبلیغ") })
                 }
             }
             Spacer(Modifier.height(6.dp))
-            Text("${inst.country} - ${inst.city}", style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(6.dp))
-            Text("کارهای موفق: ${inst.successfulCases}", style = MaterialTheme.typography.bodySmall)
-            if (inst.isSponsored) {
-                Text("هزینه تبلیغ: ${inst.adCost}", style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
-}
-
-@Composable
-private fun DropdownField(
-    label: String,
-    value: String,
-    items: List<String>,
-    onSelect: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = modifier
-    ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(label) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor().fillMaxWidth()
-        )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            items.forEach { item ->
-                DropdownMenuItem(
-                    text = { Text(if (item.isBlank()) "همه" else item) },
-                    onClick = {
-                        onSelect(item)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
+            Text("${inst.country} - ${inst.city}", style = MaterialTheme
