@@ -3,30 +3,11 @@
 package com.example.studentdispatch.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -45,11 +26,19 @@ fun DispatchListScreen(
         topBar = {
             TopAppBar(
                 title = { Text("اعزام دانشجو") },
-                actions = { TextButton(onClick = onOpenAdmin) { Text("ادمین") } }
+                actions = {
+                    TextButton(onClick = onOpenAdmin) {
+                        Text("ادمین")
+                    }
+                }
             )
         }
     ) { pad ->
-        Column(Modifier.padding(pad).padding(12.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(pad)
+                .padding(12.dp)
+        ) {
 
             OutlinedTextField(
                 value = state.query,
@@ -61,33 +50,43 @@ fun DispatchListScreen(
             Spacer(Modifier.height(10.dp))
 
             Row(
-                Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 DropdownField(
                     label = "کشور",
                     value = state.country,
                     items = listOf("") + state.countries,
-                    onSelect = { onCountry(it) },
+                    onSelect = onCountry,
                     modifier = Modifier.weight(1f)
                 )
+
                 DropdownField(
                     label = "شهر",
                     value = state.city,
                     items = listOf("") + state.cities,
-                    onSelect = { onCity(it) },
+                    onSelect = onCity,
                     modifier = Modifier.weight(1f)
                 )
             }
 
             Spacer(Modifier.height(12.dp))
 
-            Text("نتایج: ${state.filtered.size}", style = MaterialTheme.typography.labelLarge)
+            Text(
+                text = "نتایج: ${state.filtered.size}",
+                style = MaterialTheme.typography.labelLarge
+            )
+
             Spacer(Modifier.height(8.dp))
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 items(state.filtered) { inst ->
-                    InstitutionCard(inst = inst, onClick = { onOpenDetail(inst.id) })
+                    InstitutionCard(
+                        inst = inst,
+                        onClick = { onOpenDetail(inst.id) }
+                    )
                 }
             }
         }
@@ -95,32 +94,49 @@ fun DispatchListScreen(
 }
 
 @Composable
-private fun InstitutionCard(inst: Institution, onClick: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth().clickable { onClick() }) {
+private fun InstitutionCard(
+    inst: Institution,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+    ) {
         Column(Modifier.padding(12.dp)) {
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    inst.name,
+                    text = inst.name,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
+
                 if (inst.isSponsored) {
-                    AssistChip(onClick = {}, label = { Text("تبلیغ") })
+                    AssistChip(
+                        onClick = {},
+                        label = { Text("تبلیغ") }
+                    )
                 }
             }
+
             Spacer(Modifier.height(6.dp))
+
             Text(
-                "${inst.country} - ${inst.city}",
+                text = "${inst.country} - ${inst.city}",
                 style = MaterialTheme.typography.bodyMedium
             )
+
             Spacer(Modifier.height(6.dp))
+
             Text(
-                "کارهای موفق: ${inst.successfulCases}",
+                text = "کارهای موفق: ${inst.successfulCases}",
                 style = MaterialTheme.typography.bodySmall
             )
+
             if (inst.isSponsored) {
                 Text(
-                    "هزینه تبلیغ: ${inst.adCost}",
+                    text = "هزینه تبلیغ: ${inst.adCost}",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -139,6 +155,7 @@ private fun DropdownField(
     var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
+
         OutlinedTextField(
             value = if (value.isBlank()) "همه" else value,
             onValueChange = {},
