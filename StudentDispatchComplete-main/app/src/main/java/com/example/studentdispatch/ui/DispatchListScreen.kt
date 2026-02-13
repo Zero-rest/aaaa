@@ -10,21 +10,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.ExposedDropdownMenu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,9 +45,7 @@ fun DispatchListScreen(
         topBar = {
             TopAppBar(
                 title = { Text("اعزام دانشجو") },
-                actions = {
-                    TextButton(onClick = onOpenAdmin) { Text("ادمین") }
-                }
+                actions = { TextButton(onClick = onOpenAdmin) { Text("ادمین") } }
             )
         }
     ) { pad ->
@@ -84,11 +79,7 @@ fun DispatchListScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Text(
-                "نتایج: ${state.filtered.size}",
-                style = MaterialTheme.typography.labelLarge
-            )
-
+            Text("نتایج: ${state.filtered.size}", style = MaterialTheme.typography.labelLarge)
             Spacer(Modifier.height(8.dp))
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -102,9 +93,7 @@ fun DispatchListScreen(
 
 @Composable
 private fun InstitutionCard(inst: Institution, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() }
-    ) {
+    Card(modifier = Modifier.fillMaxWidth().clickable { onClick() }) {
         Column(Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -117,53 +106,4 @@ private fun InstitutionCard(inst: Institution, onClick: () -> Unit) {
                 }
             }
             Spacer(Modifier.height(6.dp))
-            Text("${inst.country} - ${inst.city}", style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(6.dp))
-            Text("کارهای موفق: ${inst.successfulCases}", style = MaterialTheme.typography.bodySmall)
-            if (inst.isSponsored) {
-                Text("هزینه تبلیغ: ${inst.adCost}", style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
-}
-
-@Composable
-private fun DropdownField(
-    label: String,
-    value: String,
-    items: List<String>,
-    onSelect: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = modifier
-    ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(label) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor().fillMaxWidth()
-        )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            items.forEach { item ->
-                DropdownMenuItem(
-                    text = { Text(if (item.isBlank()) "همه" else item) },
-                    onClick = {
-                        onSelect(item)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
+            Text("${inst.country} - ${inst.city}", style = MaterialTheme
