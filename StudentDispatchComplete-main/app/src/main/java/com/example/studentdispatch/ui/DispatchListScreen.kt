@@ -60,7 +60,10 @@ fun DispatchListScreen(
 
             Spacer(Modifier.height(10.dp))
 
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 DropdownField(
                     label = "کشور",
                     value = state.country,
@@ -106,4 +109,59 @@ private fun InstitutionCard(inst: Institution, onClick: () -> Unit) {
                 }
             }
             Spacer(Modifier.height(6.dp))
-            Text("${inst.country} - ${inst.city}", style = MaterialTheme
+            Text(
+                "${inst.country} - ${inst.city}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "کارهای موفق: ${inst.successfulCases}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            if (inst.isSponsored) {
+                Text(
+                    "هزینه تبلیغ: ${inst.adCost}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DropdownField(
+    label: String,
+    value: String,
+    items: List<String>,
+    onSelect: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = if (value.isBlank()) "همه" else value,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = true }
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            items.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(if (item.isBlank()) "همه" else item) },
+                    onClick = {
+                        onSelect(item)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
